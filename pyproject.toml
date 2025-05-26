@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "git-commits"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Python library for listing Git commits from local repositories with advanced filtering options"
 readme = "README.md"
 license = {text = "MIT"}

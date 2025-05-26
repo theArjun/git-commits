@@ -289,13 +289,13 @@ This project is configured to be published using `uv`. Here's how to publish:
 
 1. **Ensure you have the latest version of uv:**
 ```bash
-uv --version  # Should be 1.0.0+
+uv --version  # Should be 1.0.1+
 ```
 
 2. **Update the version in `pyproject.toml`:**
 ```toml
 [project]
-version = "1.0.0"  # Increment as needed
+version = "1.0.1"  # Increment as needed
 ```
 
 3. **Build the package:**
