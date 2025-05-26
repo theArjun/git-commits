@@ -17,10 +17,10 @@ def run_command(cmd, description=""):
     """Run a command and handle errors."""
     if description:
         print(f"\n🔄 {description}")
-    
+
     print(f"Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=PROJECT_ROOT)
-    
+
     if result.returncode != 0:
         print(f"❌ Command failed with exit code {result.returncode}")
         sys.exit(1)
@@ -30,8 +30,14 @@ def run_command(cmd, description=""):
 
 def format_code():
     """Format code with black and isort."""
-    run_command(["uv", "run", "black", "src/", "tests/", "scripts/"], "Formatting code with black")
-    run_command(["uv", "run", "isort", "src/", "tests/", "scripts/"], "Sorting imports with isort")
+    run_command(
+        ["uv", "run", "black", "src/", "tests/", "scripts/"],
+        "Formatting code with black",
+    )
+    run_command(
+        ["uv", "run", "isort", "src/", "tests/", "scripts/"],
+        "Sorting imports with isort",
+    )
 
 
 def lint_code():
@@ -57,14 +63,14 @@ def build_package():
 def clean():
     """Clean build artifacts."""
     import shutil
-    
+
     paths_to_clean = [
         PROJECT_ROOT / "dist",
         PROJECT_ROOT / "build",
         PROJECT_ROOT / "*.egg-info",
         PROJECT_ROOT / "src" / "git_commits.egg-info",
     ]
-    
+
     for path in paths_to_clean:
         if path.exists():
             if path.is_dir():
@@ -73,7 +79,7 @@ def clean():
             else:
                 path.unlink()
                 print(f"🗑️  Removed file: {path}")
-    
+
     # Clean __pycache__ directories
     for pycache in PROJECT_ROOT.rglob("__pycache__"):
         shutil.rmtree(pycache)
@@ -83,7 +89,7 @@ def clean():
 def check_all():
     """Run all checks (format, lint, type check, test)."""
     format_code()
-    lint_code() 
+    lint_code()
     type_check()
     run_tests()
     print("\n🎉 All checks passed!")
@@ -94,11 +100,11 @@ def main():
     parser.add_argument(
         "command",
         choices=["format", "lint", "type-check", "test", "build", "clean", "check-all"],
-        help="Command to run"
+        help="Command to run",
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "format":
         format_code()
     elif args.command == "lint":
@@ -116,4 +122,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

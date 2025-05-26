@@ -12,6 +12,7 @@ from git_commits import list_git_commits, GitCommit
 def test_import():
     """Test that the library can be imported correctly."""
     from git_commits import list_git_commits
+
     assert callable(list_git_commits)
     assert GitCommit is not None
 
@@ -40,12 +41,12 @@ def test_current_repository():
         if commits:
             # Verify the structure of returned commits
             commit = commits[0]
-            assert hasattr(commit, 'sha')
-            assert hasattr(commit, 'short_sha')
-            assert hasattr(commit, 'author_name')
-            assert hasattr(commit, 'author_email')
-            assert hasattr(commit, 'authored_datetime')
-            assert hasattr(commit, 'message')
+            assert hasattr(commit, "sha")
+            assert hasattr(commit, "short_sha")
+            assert hasattr(commit, "author_name")
+            assert hasattr(commit, "author_email")
+            assert hasattr(commit, "authored_datetime")
+            assert hasattr(commit, "message")
             assert isinstance(commit.authored_datetime, datetime)
     except Exception:
         # If there's any error, just pass - this might not be a git repo
@@ -57,16 +58,22 @@ def test_gitcommit_structure():
     # We can't easily create a GitCommit without a real git repo,
     # but we can test that the class exists and has the expected structure
     from git_commits.core import GitCommit
-    
+
     # Check if it's a dataclass (has __dataclass_fields__)
-    assert hasattr(GitCommit, '__dataclass_fields__')
-    
+    assert hasattr(GitCommit, "__dataclass_fields__")
+
     # Check expected fields
-    expected_fields = {'sha', 'short_sha', 'author_name', 'author_email', 
-                      'authored_datetime', 'message'}
+    expected_fields = {
+        "sha",
+        "short_sha",
+        "author_name",
+        "author_email",
+        "authored_datetime",
+        "message",
+    }
     actual_fields = set(GitCommit.__dataclass_fields__.keys())
     assert expected_fields.issubset(actual_fields)
 
 
 if __name__ == "__main__":
-    pytest.main([__file__]) 
+    pytest.main([__file__])

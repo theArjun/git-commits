@@ -8,9 +8,8 @@ from datetime import datetime
 from typing import List, Optional, Union
 
 import git
-from dateutil import parser as date_parser
-from dateutil.relativedelta import relativedelta
 import pytz
+import dateparser
 
 
 @dataclass
@@ -27,7 +26,7 @@ class GitCommit:
 
 def _parse_date_string(date_str: str, timezone_str: str = "UTC") -> datetime:
     """
-    Parse a date string into a timezone-aware datetime object.
+    Parse a date string into a timezone-aware datetime object using dateparser.
 
     Args:
         date_str: Date string to parse (e.g., "2023-01-01", "yesterday", "2 weeks ago")
@@ -37,46 +36,20 @@ def _parse_date_string(date_str: str, timezone_str: str = "UTC") -> datetime:
         Timezone-aware datetime object
     """
     timezone = pytz.timezone(timezone_str)
-    now = datetime.now(timezone)
 
-    # Handle relative date strings
-    if date_str.lower() == "now":
-        return now
-    elif date_str.lower() == "yesterday":
-        return now - relativedelta(days=1)
-    elif date_str.lower() == "today":
-        return now.replace(hour=0, minute=0, second=0, microsecond=0)
-    elif "ago" in date_str.lower():
-        # Parse strings like "2 weeks ago", "3 days ago", "1 month ago"
-        parts = date_str.lower().split()
-        if len(parts) >= 3 and parts[-1] == "ago":
-            try:
-                value = int(parts[0])
-                unit = parts[1]
+    # Use dateparser to parse the date string
+    dt = dateparser.parse(
+        date_str, settings={"TIMEZONE": timezone_str, "RETURN_AS_TIMEZONE_AWARE": True}
+    )
+    if dt is None:
+        raise ValueError(f"Unable to parse date string '{date_str}'")
 
-                if unit.startswith("day"):
-                    return now - relativedelta(days=value)
-                elif unit.startswith("week"):
-                    return now - relativedelta(weeks=value)
-                elif unit.startswith("month"):
-                    return now - relativedelta(months=value)
-                elif unit.startswith("year"):
-                    return now - relativedelta(years=value)
-                elif unit.startswith("hour"):
-                    return now - relativedelta(hours=value)
-                elif unit.startswith("minute"):
-                    return now - relativedelta(minutes=value)
-            except (ValueError, IndexError):
-                pass
-
-    # Try to parse as a regular date string
-    try:
-        # Parse the date string without timezone info first
-        parsed_date = date_parser.parse(date_str, ignoretz=True)
-        # Localize to the specified timezone
-        return timezone.localize(parsed_date)
-    except Exception as e:
-        raise ValueError(f"Unable to parse date string '{date_str}': {e}")
+    # Ensure the datetime is timezone-aware and in the correct timezone
+    if dt.tzinfo is None:
+        dt = timezone.localize(dt)
+    else:
+        dt = dt.astimezone(timezone)
+    return dt
 
 
 def list_git_commits(
