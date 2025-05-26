@@ -11,8 +11,6 @@ from git_commits import list_git_commits, GitCommit
 
 def test_import():
     """Test that the library can be imported correctly."""
-    from git_commits import list_git_commits
-
     assert callable(list_git_commits)
     assert GitCommit is not None
 
