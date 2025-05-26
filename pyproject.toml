@@ -38,10 +38,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/git-commits"
-Repository = "https://github.com/yourusername/git-commits"
-Documentation = "https://github.com/yourusername/git-commits#readme"
-"Bug Tracker" = "https://github.com/yourusername/git-commits/issues"
+Homepage = "https://github.com/thearjun/git-commits"
+Repository = "https://github.com/thearjun/git-commits"
+Documentation = "https://github.com/thearjun/git-commits#readme"
+"Bug Tracker" = "https://github.com/thearjun/git-commits/issues"
 
 [project.optional-dependencies]
 dev = [
