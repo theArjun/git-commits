@@ -29,7 +29,7 @@ uv add git-commits
 For development installation:
 
 ```bash
-git clone https://github.com/yourusername/git-commits.git
+git clone https://github.com/theArjun/git-commits.git
 cd git-commits
 uv install -e .
 ```
@@ -213,7 +213,7 @@ commits = list_git_commits("/invalid/path")
 
 - Python 3.9+
 - GitPython >= 3.1.40
-- python-dateutil >= 2.8.2
+- dateparser >= 1.2.1
 - pytz >= 2024.1
 
 ## Development
@@ -222,7 +222,7 @@ commits = list_git_commits("/invalid/path")
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/git-commits.git
+git clone https://github.com/theArjun/git-commits.git
 cd git-commits
 ```
 
