@@ -8,10 +8,8 @@ from datetime import datetime
 from typing import List, Optional, Union
 
 import git
-import pytz
-import dateparser
 
-from .utils import get_timezone
+from .utils import get_timezone, parse_date_string
 
 
 @dataclass
@@ -25,35 +23,6 @@ class GitCommit:
     authored_datetime: datetime
     message: str
     branches: List[str]
-
-
-def _parse_date_string(date_str: str, timezone: pytz.timezone = pytz.UTC) -> datetime:
-    """
-    Parse a date string into a timezone-aware datetime object using dateparser.
-
-    Args:
-        date_str: Date string to parse (e.g., "2023-01-01", "yesterday", "2 weeks ago")
-        timezone: Timezone to interpret the date in (defaults to UTC)
-
-    Returns:
-        Timezone-aware datetime object
-    """
-
-    timezone_str = timezone.zone
-
-    # Use dateparser to parse the date string
-    dt = dateparser.parse(
-        date_str, settings={"TIMEZONE": timezone_str, "RETURN_AS_TIMEZONE_AWARE": True}
-    )
-    if dt is None:
-        raise ValueError(f"Unable to parse date string '{date_str}'")
-
-    # Ensure the datetime is timezone-aware and in the correct timezone
-    if dt.tzinfo is None:
-        dt = timezone.localize(dt)
-    else:
-        dt = dt.astimezone(timezone)
-    return dt
 
 
 def list_git_commits(
@@ -108,7 +77,7 @@ def list_git_commits(
 
         if since is not None:
             if isinstance(since, str):
-                since_datetime = _parse_date_string(since, timezone_obj)
+                since_datetime = parse_date_string(since, timezone_obj)
             elif isinstance(since, datetime):
                 since_datetime = since
                 if since_datetime.tzinfo is None:
@@ -118,7 +87,7 @@ def list_git_commits(
 
         if until is not None:
             if isinstance(until, str):
-                until_datetime = _parse_date_string(until, timezone_obj)
+                until_datetime = parse_date_string(until, timezone_obj)
             elif isinstance(until, datetime):
                 until_datetime = until
                 if until_datetime.tzinfo is None:
