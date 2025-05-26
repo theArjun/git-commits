@@ -2,7 +2,7 @@
 A Python library for listing Git commits from local repositories.
 """
 
-from .core import list_git_commits, GitCommit
+from .core import list_git_commits, get_repo_authors
 
 __version__ = "1.0.0"
-__all__ = ["list_git_commits", "GitCommit"]
+__all__ = ["list_git_commits", "get_repo_authors"]

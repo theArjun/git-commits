@@ -3,26 +3,13 @@ Core functionality for listing Git commits.
 """
 
 import os
-from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional, Union
 
 import git
 
+from .schemas import GitCommit, RepoAuthor
 from .utils import get_timezone, parse_date_string
-
-
-@dataclass
-class GitCommit:
-    """Represents a Git commit with relevant information."""
-
-    sha: str
-    short_sha: str
-    author_name: str
-    author_email: str
-    authored_datetime: datetime
-    message: str
-    branches: List[str]
 
 
 def list_git_commits(
@@ -157,4 +144,43 @@ def list_git_commits(
 
     except Exception as e:
         print(f"Error: An error occurred while processing commits: {e}")
+        return []
+
+
+def get_repo_authors(repo_path: str) -> List[RepoAuthor]:
+    """
+    Get a list of unique authors from a Git repository.
+
+    Args:
+        repo_path: The absolute or relative path to the local Git repository
+
+    Returns:
+        List of RepoAuthor objects representing the unique authors in the repository
+    """
+    try:
+        # Validate and open the repository
+        if not os.path.exists(repo_path):
+            print(f"Error: Repository path '{repo_path}' does not exist.")
+            return []
+
+        repo = git.Repo(repo_path)
+
+        # Get all commits
+        commits = list(repo.iter_commits())
+
+        # Get unique authors
+        authors = set()
+
+        for commit in commits:
+            author_email = commit.author.email
+            author_name = commit.author.name
+            authors.add((author_email, author_name))
+
+        author_list = [
+            RepoAuthor(name=author[1], email=author[0]) for author in authors
+        ]
+
+        return author_list
+    except Exception as e:
+        print(f"Error: An error occurred while processing authors: {e}")
         return []
