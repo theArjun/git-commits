@@ -32,7 +32,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        uv install -e ".[dev]"
+        uv install --group dev"
     
     - name: Run tests
       run: |
