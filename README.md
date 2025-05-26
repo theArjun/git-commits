@@ -1,4 +1,4 @@
-# Git Commits Library
+# Git Commits
 
 A Python library for listing Git commits from local repositories with advanced filtering options.
 
@@ -191,7 +191,7 @@ The library supports various date string formats:
 - **ISO dates**: `"2024-01-01"`, `"2024-01-01 15:30:00"`
 - **Relative dates**: `"yesterday"`, `"today"`, `"now"`
 - **Relative periods**: `"1 week ago"`, `"2 months ago"`, `"3 days ago"`
-- **Natural language**: Most date strings parseable by `python-dateutil`
+- **Natural language**: Most date strings parseable by [`dateparser`](https://dateparser.readthedocs.io/en/latest/)
 
 ## Error Handling
 
@@ -258,13 +258,13 @@ This project is configured to be published using `uv`. Here's how to publish:
 
 1. **Ensure you have the latest version of uv:**
 ```bash
-uv --version  # Should be 0.1.0+
+uv --version  # Should be 1.0.0+
 ```
 
 2. **Update the version in `pyproject.toml`:**
 ```toml
 [project]
-version = "0.1.1"  # Increment as needed
+version = "1.0.0"  # Increment as needed
 ```
 
 3. **Build the package:**
@@ -276,29 +276,11 @@ uv build
 ```bash
 uv publish
 ```
+More on publishing can be found [here](https://docs.astral.sh/uv/guides/package/)
 
 5. **Test the installation:**
 ```bash
 uv run --with git-commits --no-project -- python -c "import git_commits"
-```
-
-#### Authentication
-
-For publishing, you'll need to set up authentication:
-
-1. **Create API tokens** on PyPI
-2. **Configure uv with your credentials:**
-```bash
-# For PyPI
-uv config set credentials.pypi.username __token__
-uv config set credentials.pypi.password pypi-your-api-token-here
-
-```
-
-Alternatively, you can use environment variables:
-```bash
-export UV_PUBLISH_USERNAME="__token__"
-export UV_PUBLISH_PASSWORD="pypi-your-api-token-here"
 ```
 
 ## License
