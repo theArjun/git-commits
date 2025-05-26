@@ -22,6 +22,7 @@ class GitCommit:
     author_email: str
     authored_datetime: datetime
     message: str
+    branches: List[str]
 
 
 def _parse_date_string(date_str: str, timezone_str: str = "UTC") -> datetime:
@@ -151,6 +152,17 @@ def list_git_commits(
             if until_datetime is not None and commit_datetime > until_datetime:
                 continue
 
+            # Get all branches containing this commit
+            try:
+                branches_output = repo.git.branch("--contains", commit.hexsha, "--all")
+                branches = [
+                    b.strip().lstrip("* ").replace("remotes/", "")
+                    for b in branches_output.split("\n")
+                    if b.strip()
+                ]
+            except Exception:
+                branches = []
+
             # Create GitCommit object
             git_commit = GitCommit(
                 sha=commit.hexsha,
@@ -159,6 +171,7 @@ def list_git_commits(
                 author_email=commit.author.email,
                 authored_datetime=commit_datetime,
                 message=commit.message.strip(),
+                branches=branches,
             )
 
             filtered_commits.append(git_commit)
