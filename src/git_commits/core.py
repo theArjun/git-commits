@@ -11,6 +11,8 @@ import git
 import pytz
 import dateparser
 
+from .utils import get_timezone
+
 
 @dataclass
 class GitCommit:
@@ -25,18 +27,19 @@ class GitCommit:
     branches: List[str]
 
 
-def _parse_date_string(date_str: str, timezone_str: str = "UTC") -> datetime:
+def _parse_date_string(date_str: str, timezone: pytz.timezone = pytz.UTC) -> datetime:
     """
     Parse a date string into a timezone-aware datetime object using dateparser.
 
     Args:
         date_str: Date string to parse (e.g., "2023-01-01", "yesterday", "2 weeks ago")
-        timezone_str: Timezone to interpret the date in (defaults to UTC)
+        timezone: Timezone to interpret the date in (defaults to UTC)
 
     Returns:
         Timezone-aware datetime object
     """
-    timezone = pytz.timezone(timezone_str)
+
+    timezone_str = timezone.zone
 
     # Use dateparser to parse the date string
     dt = dateparser.parse(
@@ -96,13 +99,16 @@ def list_git_commits(
         return []
 
     try:
+        # Get timezone
+        timezone_obj = get_timezone(timezone)
+
         # Prepare date filters
         since_datetime = None
         until_datetime = None
 
         if since is not None:
             if isinstance(since, str):
-                since_datetime = _parse_date_string(since, timezone)
+                since_datetime = _parse_date_string(since, timezone_obj)
             elif isinstance(since, datetime):
                 since_datetime = since
                 if since_datetime.tzinfo is None:
@@ -112,7 +118,7 @@ def list_git_commits(
 
         if until is not None:
             if isinstance(until, str):
-                until_datetime = _parse_date_string(until, timezone)
+                until_datetime = _parse_date_string(until, timezone_obj)
             elif isinstance(until, datetime):
                 until_datetime = until
                 if until_datetime.tzinfo is None:
@@ -133,7 +139,9 @@ def list_git_commits(
 
         for commit in commits:
             # Convert commit authored datetime to timezone-aware datetime
-            commit_datetime = datetime.fromtimestamp(commit.authored_date, tz=pytz.UTC)
+            commit_datetime = datetime.fromtimestamp(
+                commit.authored_date, tz=timezone_obj
+            )
 
             # Apply author filter
             if author is not None:
