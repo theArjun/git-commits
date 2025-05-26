@@ -11,6 +11,7 @@ A Python library for listing Git commits from local repositories with advanced f
 - 🌿 Support for searching across all branches
 - 🛡️ Robust error handling
 - 📦 Clean dataclass-based return objects
+- 👥 List unique authors in a repository
 
 ## Installation
 
@@ -37,7 +38,7 @@ uv install -e .
 ## Quick Start
 
 ```python
-from git_commits import list_git_commits
+from git_commits import list_git_commits, get_repo_authors
 
 # List all commits from current repository
 commits = list_git_commits(".")
@@ -45,6 +46,11 @@ commits = list_git_commits(".")
 # Print first few commits
 for commit in commits[:3]:
     print(f"{commit.short_sha} - {commit.author_name}: {commit.message}")
+
+# List all unique authors in the repository
+authors = get_repo_authors(".")
+for author in authors:
+    print(f"{author.name} <{author.email}>")
 ```
 
 ## API Reference
@@ -72,6 +78,31 @@ List of `GitCommit` objects with the following attributes:
 - **`author_email`** (str): Email of the commit author
 - **`authored_datetime`** (datetime): Timezone-aware datetime when the commit was authored
 - **`message`** (str): Full commit message
+
+### `get_repo_authors(repo_path)`
+
+Get a list of unique authors from a Git repository.
+
+#### Parameters
+
+- **`repo_path`** (str): The absolute or relative path to the local Git repository
+
+#### Returns
+
+List of `RepoAuthor` objects with the following attributes:
+
+- **`name`** (str): Name of the author
+- **`email`** (str): Email of the author
+
+#### Example
+
+```python
+from git_commits import get_repo_authors
+
+authors = get_repo_authors("/path/to/repo")
+for author in authors:
+    print(f"{author.name} <{author.email}>")
+```
 
 ## Usage Examples
 
